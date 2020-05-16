@@ -1,0 +1,18 @@
+#+TITLE:Thermal Printer Converter
+I bought a ~Zijiang-ZJ-58~ from Amazon, but found that the existing Linux software did not print in the correct format, or not how I wanted. These scripts output in the ESCPOS format, which is what the printer uses internally.
+
+* TODO Setup
+[[http://scruss.com/blog/2015/07/12/thermal-printer-driver-for-cups-linux-and-raspberry-pi-zj-58/][Article]]
+[[https://github.com/klirichek/zj-58][Driver]]
+
+#+BEGIN_SRC sh
+sudo apt install build-essential cmake libcups2-dev libcupsimage2-dev
+sudo apt install -y system-config-printer
+#+END_SRC
+
+[[https://www.techrepublic.com/article/control-printers-in-linux-from-the-command-line/][Command line operation]]
+* Use
+#+BEGIN_SRC sh
+python3 EpsonESCPOSConverter.py
+./printOutput.sh
+#+END_SRC
