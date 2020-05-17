@@ -1,9 +1,7 @@
-#+TITLE:Big Title with some text that needs wrapping
+#+TITLE:Big Title with wrapping
 * Heading
 Welcome to the test print.
 ** Subheading 1
-This is some text which is going to cause the printer to wrap the line. Is it going to wrap the line properly? Only time will tell.
+This is some text which is going to cause the printer to wrap the line.
 *** This is a deeper heading
-Any heading as deep or deeper will look the same as this one.
-** Subheading 2
-Here's another heading.
+It's deep

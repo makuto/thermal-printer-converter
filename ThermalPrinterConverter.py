@@ -1,3 +1,4 @@
+import sys
 import textwrap
 
 # Output a binary file which a ESCPOS thermal printer will understand
@@ -29,6 +30,8 @@ def writeOutputBuffer():
     # I think the printer needs to be told this is the desired format
     # encodedString = gOutputBuffer.encode("gb18030")
     print("Outputting to {}".format(outputFilename))
+    print("Use the following command (replacing [your printer]) to print:\n"
+          "lpr -P [your printer] output.bin")
     outFile = open(outputFilename, "wb")
     outFile.write(encodedString)
     outFile.close()
@@ -59,28 +62,28 @@ def outputTextBlock(outString):
     wrapWidth = lineWrapColumns[gCurrentTextStyle]
     # Fix newlines and wrap
     # lines = outString.replace('\n', newLine).split(newLine)
-    # print("'" + outString + "'")
+    # We will be adding this newline later, and it will just confuse the splitter.
+    if outString[-1] == '\n':
+        outString = outString[:-1]
     lines = outString.split("\n")
     wrappedLines = []
     for line in lines:
+        if not line:
+            wrappedLines.append('')
         wrappedLines += textwrap.wrap(line, width=wrapWidth)
-    # print(wrappedLines)
     # exit()
     for line in wrappedLines:
-        print('"' + line + '"')
         if line:
             gOutputBuffer += line + newLine
-            # print(line)
         else:
             gOutputBuffer += newLine
-            # print("")
 
 def lineHasTagExactly(line, tag):
     return len(line) >= len(tag) and tag in line[:len(tag)]
 
 def lineGetTaggedValue(line, tag):
     return line[len(tag):]
-    
+
 def orgModeToEscPos(orgLines):
     for line in orgLines:
         if lineHasTagExactly(line, '#+TITLE:'):
@@ -94,18 +97,18 @@ def orgModeToEscPos(orgLines):
             setTextStyle(TextStyle_RegularEmphasis)
             outputTextBlock("\n" + lineGetTaggedValue(line, '** '))
         # All deeper headings are just bolded and have a space at the start
-        elif line[0] == "*":
+        elif len(line) > 2 and line[0] == "*" and line[1] == "*":
             setTextStyle(TextStyle_RegularEmphasis)
             outputTextBlock("\n" + line[line.find(" "):])
         # Body text
         else:
             setTextStyle(TextStyle_Regular)
-            outputTextBlock(line, TextStyle_Regular)
+            outputTextBlock(line)
 
-def main():
+def main(filenameToConvert):
     outputInitializationCode()
 
-    orgFile = open("TestPrint.org", "r")
+    orgFile = open(filenameToConvert, "r")
     orgLines = orgFile.readlines()
     orgFile.close()
 
@@ -163,4 +166,8 @@ def main():
     # outFile.close()
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 2:
+        print("Org Mode to ESCPOS\nUsage:\n\tpython3 ThermalPrinterConverter.py MyDoc.org")
+        sys.exit(1)
+    else:
+        main(sys.argv[1])

@@ -13,6 +13,6 @@ sudo apt install -y system-config-printer
 [[https://www.techrepublic.com/article/control-printers-in-linux-from-the-command-line/][Command line operation]]
 * Use
 #+BEGIN_SRC sh
-python3 EpsonESCPOSConverter.py
+python3 TermalPrinterConverter.py
 ./printOutput.sh
 #+END_SRC
